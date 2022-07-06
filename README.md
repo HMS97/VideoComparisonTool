@@ -23,10 +23,10 @@ pip install -r requirements.txt
 
 ## Usage: Command line
 ```python
-import VideoComparsionTool 
+from VideoComparsionTool import VCT 
 
 
-vct = VideoComparsionTool(source_text = 'input', target_text = 'output', zoom_point = (400,500))
+vct = VCT(source_text = 'input', target_text = 'output', zoom_point = (400,500))
 #set different zoom point for different videos
 zoom_dict = {}
 zoom_dict['indoor1.mp4'] = (800,800)
