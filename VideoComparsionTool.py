@@ -188,5 +188,5 @@ if __name__ == '__main__':
     set different zoom point for different videos
     zoom_dict = {}
     zoom_dict['indoor1.mp4'] = (800,800)
-    generate the videos in different folder
+    # generate the videos in different folder
     vct.videos2clip('input_video', 'output_video', flash_type= 'topdown', zoom_dict = zoom_dict)
