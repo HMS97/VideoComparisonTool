@@ -184,8 +184,8 @@ class VCT():
 if __name__ == '__main__':
 
 
-    vct = VideoComparsionTool(source_text = 'input', target_text = 'output', zoom_point = (400,500))
-    set different zoom point for different videos
+    vct = VCT(source_text = 'input', target_text = 'output', zoom_point = (400,500))
+    # set different zoom point for different videos
     zoom_dict = {}
     zoom_dict['indoor1.mp4'] = (800,800)
     # generate the videos in different folder
