@@ -19,6 +19,7 @@ class VCT():
         rectangle_size: the size of the rectangle to display on the  figure
         transformed_re_size: the size of the transformed rectangle to display on the  oomed figure
         fps: the fps of the output video
+        FIF: if False, there would not be figure in fgure
     """
     def __init__(self, zoom_point = (800,500), output_name = 'output.mp4', source_text = 'input', target_text = 'proposed', FIF = True, rectangle_size = 300, transformed_re_size = 500, fps = 20):
         self.source_frames = []
