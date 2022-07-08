@@ -4,7 +4,7 @@ import copy
 from path import Path
 import os
 import argparse
-
+import numpy as np
 
 
 class VCT():
@@ -34,6 +34,36 @@ class VCT():
         self.target_text = target_text
 
 
+    def cal_frames_metirc(self,  source_folder = None, target_folder = None, metric_function = None, source_frames = None, target_frames = None):
+        assert metric_function is not None, "The metric function is not defined"
+        if source_folder is not None and target_folder is not None:
+       
+            source_path = Path(source_folder)
+            target_path = Path(target_folder)
+            assert source_path.isdir(), "The source path is not a directory"
+            assert target_path.isdir(), "The target path is not a directory"
+            source_path = sorted(source_path.files(), key = lambda x: x.stem)
+            target_path = sorted(target_path.files(), key = lambda x: x.stem)
+            assert len(source_path) == len(target_path), "The source and target video are not the same length"
+            results = []
+            for source_item, target_item in zip(source_path, target_path):
+                source_item = cv2.imread(source_item)
+                target_item = cv2.imread(target_item)
+                results.append(metric_function(source_item, target_item))
+
+        elif source_frames is not None and target_frames is not None:
+            assert len(source_frames) == len(target_frames), "The source and target video are not the same length"
+            results = []
+            for source_item, target_item in zip(source_frames, target_frames):
+                results.append(metric_function(source_item, target_item))
+        print('the metric for this video is: ', np.mean(results))
+        return np.mean(results)
+
+    def cal_video_metirc(self,  source_path, target_path, metric_function = None):
+        self.video2clip(source_path, target_path, needs_output = False)
+        return self.cal_frames_metirc(metric_function = metric_function, source_frames = self.source_frames, target_frames = self.target_frames)
+
+
     def frames2video(self, images_folder, fps = 20, output_path = None):
         images_path = sorted(Path(images_folder).files(), key = lambda x: x.stem)
         middle_results = []
@@ -46,7 +76,7 @@ class VCT():
 
 
 
-    def video2clip(self, source_path, target_path, flash_type = 'topdown', zoom_point = None):
+    def video2clip(self, source_path, target_path, flash_type = 'topdown', zoom_point = None, needs_output = True):
         self.flash_type = flash_type
         source_path = Path(source_path)
         target_path = Path(target_path)
@@ -61,11 +91,11 @@ class VCT():
             self.source_frames.append(item)
         for item in target_clip.iter_frames():
             self.target_frames.append(item)    
-        results = []
-        assert len(self.source_frames) == len(self.target_frames), "The source and target video are not the same length"
-
-        results = self.__switch_flash__(results, zoom_point = zoom_point)
-        self.clip2video(results)
+        if needs_output:
+            results = []
+            assert len(self.source_frames) == len(self.target_frames), "The source and target video are not the same length"
+            results = self.__switch_flash__(results, zoom_point = zoom_point)
+            self.clip2video(results)
 
     def videos2clip(self, source_path, target_path, flash_type = 'topdown', zoom_dict = None):
         self.flash_type = flash_type
@@ -213,11 +243,13 @@ class VCT():
 
 # args = parser.parse_args()
 if __name__ == '__main__':
-
+    def  CalPSNR(x,y,range = 255):
+        return 10*np.log10(range**2/np.mean((x-y)**2))
 
     vct = VCT(source_text = 'input', target_text = 'output', zoom_point = (400,500), FIF = False)
-    # set different zoom point for different videos
-    zoom_dict = {}
-    zoom_dict['indoor1.mp4'] = (800,800)
-    # generate the videos in different folder
-    vct.videos2clip('input_video', 'output_video', flash_type= 'topdown', zoom_dict = zoom_dict)
+    # # set different zoom point for different videos
+    # zoom_dict = {}
+    # zoom_dict['indoor1.mp4'] = (800,800)
+    # # generate the videos in different folder
+    # vct.videos2clip('input_video', 'output_video', flash_type= 'topdown', zoom_dict = zoom_dict)
+    vct.cal_video_metirc('/Users/huimingsun/Downloads/DAVIS/compare_videos/indoor1.mp4', '/Users/huimingsun/Downloads/DAVIS/compare_videos/indoor1_noise.mp4', metric_function = CalPSNR)
