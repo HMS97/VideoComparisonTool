@@ -13,6 +13,11 @@
 
 It is a video comparsion tool to compare the raw video and processed video. At the top right of the image, there are  two figures from the raw video and the processed video which could show the detail and difference. Two mainly comparsion methods are implemented, top down flash and vertial flash. The example is shown above. This tool can be used to compare two videos and the videos with same name in the different folders.
 
+## Support flash types
+- top down flash
+- left right flash
+- vertical flash
+
 
 ## Installation
 ```
