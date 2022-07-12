@@ -21,12 +21,12 @@ class VCT():
         fps: the fps of the output video
         FIF: if False, there would not be figure in fgure
     """
-    def __init__(self, zoom_point = (800,500), output_name = 'output.mp4', source_text = 'input', target_text = 'proposed', FIF = True, rectangle_size = 300, transformed_re_size = 500, fps = 20):
+    def __init__(self, image_size = (512,512), zoom_point = (200,200), output_name = 'output.mp4', source_text = 'input', target_text = 'proposed', FIF = True, rectangle_size = None, transformed_re_size = None, fps = 20):
         self.source_frames = []
         self.target_frames = []
         self.zoom_point = zoom_point
-        self.rectangle_size = rectangle_size
-        self.transformed_re_size = transformed_re_size
+        self.rectangle_size = rectangle_size if rectangle_size is not None else image_size[0]/10
+        self.transformed_re_size = self.rectangle_size * 2
         self.fps = fps
         self.FIF = FIF
         self.output_name = output_name
@@ -35,6 +35,14 @@ class VCT():
 
 
     def cal_frames_metirc(self,  source_folder = None, target_folder = None, metric_function = None, source_frames = None, target_frames = None):
+        """
+        Args:
+            source_folder: the path to the source folder
+            target_folder: the path to the target folder
+            metric_function: the metric function to use
+            source_frames: the source frames
+            target_frames: the target frames
+        """
         assert metric_function is not None, "The metric function is not defined"
         if source_folder is not None and target_folder is not None:
        
@@ -60,11 +68,23 @@ class VCT():
         return np.mean(results)
 
     def cal_video_metirc(self,  source_path, target_path, metric_function = None):
+        """
+        Args:
+            source_path: the path to the source video
+            target_path: the path to the target video
+            metric_function: the metric function to use
+        """
         self.video2clip(source_path, target_path, needs_output = False)
         return self.cal_frames_metirc(metric_function = metric_function, source_frames = self.source_frames, target_frames = self.target_frames)
 
 
     def frames2video(self, images_folder, fps = 20, output_path = None):
+        """
+        Args:
+            images_folder: the path to the folder containing the images
+            fps: the fps of the output video
+            output_path: the path to the output video
+        """
         images_path = sorted(Path(images_folder).files(), key = lambda x: x.stem)
         middle_results = []
         for image in images_path:
@@ -77,6 +97,14 @@ class VCT():
 
 
     def video2clip(self, source_path, target_path, flash_type = 'topdown', zoom_point = None, needs_output = True):
+        """
+        Args:
+            source_path: the path to the source video
+            target_path: the path to the target video
+            flash_type: the type of flash to use
+            zoom_point: the point to zoom in on
+            needs_output: if True, the output video will be saved
+        """
         self.flash_type = flash_type
         source_path = Path(source_path)
         target_path = Path(target_path)
@@ -98,6 +126,13 @@ class VCT():
             self.clip2video(results)
 
     def videos2clip(self, source_path, target_path, flash_type = 'topdown', zoom_dict = None):
+        """
+        Args:
+            source_path: the path to the source video
+            target_path: the path to the target video
+            flash_type: the type of flash to use
+            zoom_dict: the zoom point to zoom in on
+        """
         self.flash_type = flash_type
 
         source_path = Path(source_path)
@@ -130,6 +165,12 @@ class VCT():
         self.clip2video(results)
 
     def __switch_flash__(self,results:list, zoom_point = None):
+        """
+        Args:
+            results: the list of frames to be switched
+            zoom_point: the point to zoom in on
+
+        """
         
         if self.flash_type == 'topdown':
             results.extend(self.__flash_topdown__(zoom_point = zoom_point))
@@ -142,6 +183,12 @@ class VCT():
         return results
     
     def clip2video(self,results:list, fps = None,  output_path = None):
+        """
+        Args:
+            results: the list of frames to be switched
+            fps: the fps of the output video
+            output_path: the path to the output video
+        """
         if output_path is None:
             output_path = 'output.mp4'
         if fps is None:
@@ -165,7 +212,7 @@ class VCT():
             image = cv2.rectangle(image,(w-self.transformed_re_size,20),(w,20+self.transformed_re_size),(0,255,255),3)
             image = cv2.rectangle(image,(zoom_point_x,zoom_point_y),(zoom_point_x+self.rectangle_size,zoom_point_y+self.rectangle_size),(0,255,255),3)
             location = (w-self.transformed_re_size,20 + 70)
-            image = cv2.putText(image, text,location,  cv2.FONT_HERSHEY_SIMPLEX,2, (255,255,255),2,cv2.LINE_AA)
+            image = cv2.putText(image, text,location,  cv2.FONT_HERSHEY_SIMPLEX,2, (255,255,255), 1,cv2.LINE_AA)
 
         else:
             image[20 + self.transformed_re_size*(index -1):+ self.transformed_re_size*(index -1) + self.transformed_re_size+20,-self.transformed_re_size:]=mask
@@ -176,7 +223,7 @@ class VCT():
                 image = cv2.rectangle(image,(zoom_point_x,zoom_point_y),(zoom_point_x+self.rectangle_size,zoom_point_y+self.rectangle_size),(0,255,255),3)
             # image = cv2.rectangle(image,(zoom_point_x,zoom_point_y),(zoom_point_x+self.rectangle_size,zoom_point_y+self.rectangle_size),(0,255,255),3)
             location = (w-self.transformed_re_size,20 +  self.transformed_re_size*(index -1)+ 70)
-            image = cv2.putText(image, text, location,  cv2.FONT_HERSHEY_SIMPLEX,2,  (255,255,255),2,cv2.LINE_AA)
+            image = cv2.putText(image, text, location,  cv2.FONT_HERSHEY_SIMPLEX,2,  (255,255,255), 1,cv2.LINE_AA)
 
         return image
 
@@ -241,15 +288,15 @@ class VCT():
             results.append(frame)
         return results
 
-# args = parser.parse_args()
-if __name__ == '__main__':
-    def  CalPSNR(x,y,range = 255):
-        return 10*np.log10(range**2/np.mean((x-y)**2))
+# # args = parser.parse_args()
+# if __name__ == '__main__':
+#     def  CalPSNR(x,y,range = 255):
+#         return 10*np.log10(range**2/np.mean((x-y)**2))
 
-    vct = VCT(source_text = 'input', target_text = 'output', zoom_point = (400,500), FIF = False)
-    # # set different zoom point for different videos
-    # zoom_dict = {}
-    # zoom_dict['indoor1.mp4'] = (800,800)
-    # # generate the videos in different folder
-    # vct.videos2clip('input_video', 'output_video', flash_type= 'topdown', zoom_dict = zoom_dict)
-    vct.cal_video_metirc('/Users/huimingsun/Downloads/DAVIS/compare_videos/indoor1.mp4', '/Users/huimingsun/Downloads/DAVIS/compare_videos/indoor1_noise.mp4', metric_function = CalPSNR)
+#     vct = VCT(source_text = 'input', target_text = 'output', zoom_point = (400,500), FIF = False)
+#     # # set different zoom point for different videos
+#     # zoom_dict = {}
+#     # zoom_dict['indoor1.mp4'] = (800,800)
+#     # # generate the videos in different folder
+#     # vct.videos2clip('input_video', 'output_video', flash_type= 'topdown', zoom_dict = zoom_dict)
+#     # vct.cal_video_metirc('/Users/huimingsun/Downloads/DAVIS/compare_videos/indoor1.mp4', '/Users/huimingsun/Downloads/DAVIS/compare_videos/indoor1_noise.mp4', metric_function = CalPSNR)
