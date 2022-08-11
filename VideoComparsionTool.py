@@ -25,7 +25,7 @@ class VCT():
         self.source_frames = []
         self.target_frames = []
         self.zoom_point = zoom_point
-        self.rectangle_size = rectangle_size if rectangle_size is not None else image_size[0]/10
+        self.rectangle_size = rectangle_size if rectangle_size is not None else image_size[0]//10
         self.transformed_re_size = self.rectangle_size * 2
         self.fps = fps
         self.FIF = FIF
@@ -205,8 +205,9 @@ class VCT():
             zoom_point_x,zoom_point_y = self.zoom_point
         else:
             zoom_point_x,zoom_point_y = zoom_point
-        part = from_frame[zoom_point_y:zoom_point_y+self.rectangle_size,zoom_point_x:zoom_point_x+self.rectangle_size]
-        mask = cv2.resize(part, (self.transformed_re_size, self.transformed_re_size), fx=0, fy=0, interpolation=cv2.INTER_LINEAR)
+      
+        part = from_frame[int(zoom_point_y):int(zoom_point_y+self.rectangle_size),int(zoom_point_x):int(zoom_point_x+self.rectangle_size)]
+        mask = cv2.resize(part, (int(self.transformed_re_size), int(self.transformed_re_size)), fx=0, fy=0, interpolation=cv2.INTER_LINEAR)
         if index == 1:
             image[20:self.transformed_re_size+20,-self.transformed_re_size:]=mask
             image = cv2.rectangle(image,(w-self.transformed_re_size,20),(w,20+self.transformed_re_size),(0,255,255),3)
@@ -273,6 +274,7 @@ class VCT():
         for index,frame in enumerate(self.source_frames):
             h,w = frame.shape[0],frame.shape[1]
             step += int(h//len(self.source_frames))
+            print(self.source_frames[index].shape)
             frame = self.source_frames[index].copy()
             # print(len(source_frames[index]), len(target_frames[index]), source_frames[index].shape)
             if which_side == 'left':
