@@ -119,6 +119,8 @@ class VCT():
             self.source_frames.append(item)
         for item in target_clip.iter_frames():
             self.target_frames.append(item)    
+        self.__align_videos__()
+
         if needs_output:
             results = []
             assert len(self.source_frames) == len(self.target_frames), "The source and target video are not the same length"
@@ -156,8 +158,10 @@ class VCT():
                 self.source_frames.append(item)
             for item in target_clip.iter_frames():
                 self.target_frames.append(item) 
+            self.__align_videos__()
             # if zoom_dict is None:
-            assert len(self.source_frames) == len(self.target_frames), f"The source and target video {file_name} are not the same length"
+        
+                # assert len(self.source_frames) == len(self.target_frames), f"The source and target video {file_name} are not the same length"
             try:
                 zoom_point = zoom_dict[file_name.name] if zoom_dict is not None else None
             except:
@@ -165,6 +169,23 @@ class VCT():
 
         results = self.__switch_flash__(results, zoom_point = zoom_point)
         self.clip2video(results)
+
+    def __align_videos__(self):
+        if len(self.source_frames) != len(self.target_frames):
+            length_source = len(self.source_frames)
+            length_target = len(self.target_frames)
+            minimum_length = min(length_source,length_target)
+            print('using the minimum length')
+            self.source_frames =  self.source_frames[: minimum_length]
+            self.target_frames =  self.target_frames[: minimum_length]
+        if self.source_frames[0].shape !=  self.target_frames[0].shape:
+            print('using the minimum size h w')
+            source_size = self.source_frames[0].shape
+            target_size = self.target_frames[0].shape
+            newsize_h = min(source_size[0],target_size[0])
+            newsize_w = min(source_size[1],target_size[1])
+            self.source_frames = [cv2.resize(i,(newsize_h,newsize_w)) for i in self.source_frames]
+            self.target_frames = [cv2.resize(i,(newsize_h,newsize_w)) for i in self.target_frames]
 
     def __switch_flash__(self,results:list, zoom_point = None):
         """
