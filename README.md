@@ -30,8 +30,13 @@ pip install -r requirements.txt
 ```python
 from VideoComparsionTool import VCT 
 
+# compare two video
+vct = VCT(source_text = 'input', target_text = 'output', image_size = (1080,1920), zoom_point = (400,500))
+#output size
+vct.video2clip('Findx3.mp4','Findx3.mp4', flash_type= 'vertical_left', resize = (1580,1920))
 
-vct = VCT(source_text = 'input', target_text = 'output', zoom_point = (400,500))
+
+#vct = VCT(source_text = 'input', target_text = 'output', zoom_point = (400,500))
 #set different zoom point for different videos
 zoom_dict = {}
 zoom_dict['indoor1.mp4'] = (800,800)
