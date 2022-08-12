@@ -21,7 +21,7 @@ class VCT():
         fps: the fps of the output video
         FIF: if False, there would not be figure in fgure
     """
-    def __init__(self, image_size = (512,512), zoom_point = (200,200), output_name = 'output.mp4', source_text = 'input', target_text = 'proposed', FIF = True, rectangle_size = None, transformed_re_size = None, fps = 20):
+    def __init__(self, image_size = (512,512), zoom_point = (200,200), output_name = 'output.mp4', source_text = 'input', target_text = 'proposed', text_thickness = 1, FIF = True, rectangle_size = None, transformed_re_size = None, fps = 20):
         self.source_frames = []
         self.target_frames = []
         self.zoom_point = zoom_point
@@ -32,7 +32,7 @@ class VCT():
         self.output_name = output_name
         self.source_text = source_text
         self.target_text = target_text
-
+        self.text_thickness = text_thickness
 
     def cal_frames_metirc(self,  source_folder = None, target_folder = None, metric_function = None, source_frames = None, target_frames = None):
         """
@@ -236,7 +236,7 @@ class VCT():
             image = cv2.rectangle(image,(w-self.transformed_re_size,20),(w,20+self.transformed_re_size),(0,255,255),3)
             image = cv2.rectangle(image,(zoom_point_x,zoom_point_y),(zoom_point_x+self.rectangle_size,zoom_point_y+self.rectangle_size),(0,255,255),3)
             location = (w-self.transformed_re_size,20 + 70)
-            image = cv2.putText(image, text,location,  cv2.FONT_HERSHEY_SIMPLEX,2, (255,255,255), 1,cv2.LINE_AA)
+            image = cv2.putText(image, text,location,  cv2.FONT_HERSHEY_SIMPLEX,self.text_thickness, (255,255,255), 1,cv2.LINE_AA)
 
         else:
             image[20 + self.transformed_re_size*(index -1):+ self.transformed_re_size*(index -1) + self.transformed_re_size+20,-self.transformed_re_size:]=mask
@@ -247,7 +247,7 @@ class VCT():
                 image = cv2.rectangle(image,(zoom_point_x,zoom_point_y),(zoom_point_x+self.rectangle_size,zoom_point_y+self.rectangle_size),(0,255,255),3)
             # image = cv2.rectangle(image,(zoom_point_x,zoom_point_y),(zoom_point_x+self.rectangle_size,zoom_point_y+self.rectangle_size),(0,255,255),3)
             location = (w-self.transformed_re_size,20 +  self.transformed_re_size*(index -1)+ 70)
-            image = cv2.putText(image, text, location,  cv2.FONT_HERSHEY_SIMPLEX,2,  (255,255,255), 1,cv2.LINE_AA)
+            image = cv2.putText(image, text, location,  cv2.FONT_HERSHEY_SIMPLEX,self.text_thickness,  (255,255,255), 1,cv2.LINE_AA)
 
         return image
 
