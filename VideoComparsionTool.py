@@ -96,7 +96,7 @@ class VCT():
 
 
 
-    def video2clip(self, source_path, target_path, flash_type = 'topdown', zoom_point = None, needs_output = True):
+    def video2clip(self, source_path, target_path, flash_type = 'topdown', zoom_point = None, needs_output = True, resize = None):
         """
         Args:
             source_path: the path to the source video
@@ -123,8 +123,10 @@ class VCT():
             results = []
             assert len(self.source_frames) == len(self.target_frames), "The source and target video are not the same length"
             results = self.__switch_flash__(results, zoom_point = zoom_point)
+            if resize != None:
+                results = [cv2.resize(i,resize) for i in results]
             self.clip2video(results)
-
+        # return results
     def videos2clip(self, source_path, target_path, flash_type = 'topdown', zoom_dict = None):
         """
         Args:
@@ -263,7 +265,7 @@ class VCT():
                 image = self.__add_figure__(image, self.source_frames[index], text = self.source_text, zoom_point = zoom_point, index = 1)
                 image = self.__add_figure__(image, self.target_frames[index], text = self.target_text, zoom_point = zoom_point, index = 2)
             results.append(image)
-        print(len(results))
+        # print(len(results))
         return results
     
     
@@ -274,7 +276,7 @@ class VCT():
         for index,frame in enumerate(self.source_frames):
             h,w = frame.shape[0],frame.shape[1]
             step += int(h//len(self.source_frames))
-            print(self.source_frames[index].shape)
+            # print(self.source_frames[index].shape)
             frame = self.source_frames[index].copy()
             # print(len(source_frames[index]), len(target_frames[index]), source_frames[index].shape)
             if which_side == 'left':
