@@ -1,13 +1,4 @@
 
-<p align="center">
-  <img src="images/topdown.gif" width="60%" title="topdown">
-</p>
-
-<p align="center">
-  <img src="images/vertical.gif" width="60%" title="vertial">
-</p>
-
-
 
 ## What is it?
 
