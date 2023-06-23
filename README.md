@@ -45,11 +45,6 @@ vct.videos2clip('input_video', 'output_video', flash_type= 'topdown', zoom_dict 
 #compare the two videos
 vct.video2clip('input.mp4','output.mp4', flash_type= 'vertical')
 
-#cal the psnr 
-def  CalPSNR(x,y,range = 255):
-      return 10*np.log10(range**2/np.mean((x-y)**2))
-
-vct.cal_video_metirc('indoor1.mp4', 'indoor1_noise.mp4', metric_function = CalPSNR)
 ```
 
 ## License
