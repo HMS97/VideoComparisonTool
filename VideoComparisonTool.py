@@ -34,48 +34,7 @@ class VCT():
         self.target_text = target_text
         self.text_thickness = text_thickness
 
-    def cal_frames_metirc(self,  source_folder = None, target_folder = None, metric_function = None, source_frames = None, target_frames = None):
-        """
-        Args:
-            source_folder: the path to the source folder
-            target_folder: the path to the target folder
-            metric_function: the metric function to use
-            source_frames: the source frames
-            target_frames: the target frames
-        """
-        assert metric_function is not None, "The metric function is not defined"
-        if source_folder is not None and target_folder is not None:
-       
-            source_path = Path(source_folder)
-            target_path = Path(target_folder)
-            assert source_path.isdir(), "The source path is not a directory"
-            assert target_path.isdir(), "The target path is not a directory"
-            source_path = sorted(source_path.files(), key = lambda x: x.stem)
-            target_path = sorted(target_path.files(), key = lambda x: x.stem)
-            assert len(source_path) == len(target_path), "The source and target video are not the same length"
-            results = []
-            for source_item, target_item in zip(source_path, target_path):
-                source_item = cv2.imread(source_item)
-                target_item = cv2.imread(target_item)
-                results.append(metric_function(source_item, target_item))
 
-        elif source_frames is not None and target_frames is not None:
-            assert len(source_frames) == len(target_frames), "The source and target video are not the same length"
-            results = []
-            for source_item, target_item in zip(source_frames, target_frames):
-                results.append(metric_function(source_item, target_item))
-        print('the metric for this video is: ', np.mean(results))
-        return np.mean(results)
-
-    def cal_video_metirc(self,  source_path, target_path, metric_function = None):
-        """
-        Args:
-            source_path: the path to the source video
-            target_path: the path to the target video
-            metric_function: the metric function to use
-        """
-        self.video2clip(source_path, target_path, needs_output = False)
-        return self.cal_frames_metirc(metric_function = metric_function, source_frames = self.source_frames, target_frames = self.target_frames)
 
 
     def frames2video(self, images_folder, fps = 20, output_path = None):
@@ -213,7 +172,7 @@ class VCT():
             output_path: the path to the output video
         """
         if output_path is None:
-            output_path = 'output.mp4'
+            output_path = 'output.avi'
         if fps is None:
             fps = self.fps
 
