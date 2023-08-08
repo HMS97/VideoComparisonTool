@@ -172,7 +172,7 @@ class VCT():
             output_path: the path to the output video
         """
         if output_path is None:
-            output_path = 'output.avi'
+            output_path = 'output.mp4'
         if fps is None:
             fps = self.fps
 
