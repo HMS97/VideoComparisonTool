@@ -38,12 +38,12 @@ vct.video2clip('Findx3.mp4','Findx3.mp4', flash_type= 'vertical_left', resize = 
 
 #vct = VCT(source_text = 'input', target_text = 'output', zoom_point = (400,500))
 #set different zoom point for different videos
-zoom_dict = {}
-zoom_dict['indoor1.mp4'] = (800,800)
+#zoom_dict = {}
+#zoom_dict['indoor1.mp4'] = (800,800)
 #compare the videos in different folder
-vct.videos2clip('input_video', 'output_video', flash_type= 'topdown', zoom_dict = zoom_dict)
+#vct.videos2clip('input_video', 'output_video', flash_type= 'topdown', zoom_dict = zoom_dict)
 #compare the two videos
-vct.video2clip('input.mp4','output.mp4', flash_type= 'vertical')
+#vct.video2clip('input.mp4','output.mp4', flash_type= 'vertical')
 
 ```
 
