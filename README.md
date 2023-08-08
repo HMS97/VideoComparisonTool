@@ -11,7 +11,7 @@
 
 ## What is it?
 
-It is a video comparison tool to compare the raw video and processed video. At the top right of the image, there are  two figures from the raw video and the processed video which could show the detail and difference. Two mainly comparison methods are implemented, top down flash and vertial flash. The example is shown above. This tool can be used to compare two videos and the videos with same name in the different folders, which could also be used to calculate the evaluation metrics of the videos.
+It is a video comparison tool to compare the raw video and processed video. At the top right of the image, there are  two figures from the raw video and the processed video which could show the detail and difference. Two mainly comparison methods are implemented, top down flash and vertial flash. The example is shown above. This tool can be used to compare two videos and the videos with same name in the different folders\.
   
 ## Support flash types
 - topdown flash
@@ -22,7 +22,7 @@ It is a video comparison tool to compare the raw video and processed video. At t
 ## Installation
 ```
 git clone https://github.com/wuchangsheng951/VideoComparisonTool.git
-cd VideoComparsionTool
+cd VideoComparisonTool
 pip install -r requirements.txt
 ```
 
